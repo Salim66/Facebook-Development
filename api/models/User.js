@@ -16,21 +16,21 @@ const userSchema = mongoose.Schema({
     },
     username : {
         type: String,
-        trim: true
+        trim: true,
+        default: ''
     },
     secondary_name : {
         type: String,
-        trim: true
+        trim: true,
+        default: ''
     },
     email : {
         type: String,
-        trim: true,
-        unique: true
+        trim: true
     },
     mobile : {
         type: String,
-        trim: true,
-        unique: true
+        trim: true
     },
     password : {
         type: String,
@@ -42,7 +42,16 @@ const userSchema = mongoose.Schema({
         enum: ['Female', 'Male', 'Custom']
     },
     birth_date : {
-        type: String
+        type: String,
+        required: true
+    },
+    birth_month : {
+        type: String,
+        required: true
+    },
+    birth_year : {
+        type: String,
+        required: true
     },
     profile_photo : {
         type: String,
@@ -85,11 +94,11 @@ const userSchema = mongoose.Schema({
         type: Array,
         default: []
     },
-    flowing : {
+    following : {
         type: Array,
         default: []
     },
-    flowers : {
+    followers : {
         type: Array,
         default: []
     },
@@ -114,8 +123,7 @@ const userSchema = mongoose.Schema({
         default: false
     },
     access_token : {
-        type: Boolean,
-        default: false
+        type: String
     },
     status : {
         type: Boolean,
