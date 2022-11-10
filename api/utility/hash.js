@@ -12,3 +12,10 @@ export const hashPassword = (password) => {
     return hash;
 
 }
+
+/**
+ * User Login Password Verify
+ */
+export const passwordVerify = (password, hash) => {
+    return bcrypt.compareSync(password, hash);
+}

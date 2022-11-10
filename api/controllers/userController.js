@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import createError from '../utility/createError.js';
-import { hashPassword } from '../utility/hash.js';
+import { hashPassword, passwordVerify } from '../utility/hash.js';
+import { createToken } from '../utility/token.js';
 import { isEmail } from '../utility/validate.js';
 
 
@@ -41,10 +42,13 @@ export const register = async (req, res, next) => {
             gender
         });
 
+        const token = createToken({ id: user._id }, '365d');
+
         if( user ){
             res.status(201).json({
-                "message" : "User created successful :)",
-                "user": user
+                message : "User created successful :)",
+                user : user,
+                token : token
             });
         }
 
@@ -61,7 +65,42 @@ export const register = async (req, res, next) => {
  */
 export const login = async (req, res, next) => {
     
-    res.send('User Login Okey');
+    try {
+        
+        // get form data
+        const { email, password } = req.body;
+
+        if( !email || !password ){
+            next(createError(400, 'All fields are required !'));
+        }
+
+        if( !isEmail(email) ){
+            next(createError(400, 'Email is Invalid !'));
+        }
+
+        const loginUser = await User.findOne({ email : email });
+
+        if( !loginUser ){
+            next(createError(400, "Email doesn't exists !"));
+        }else {
+
+            if( !passwordVerify( password, loginUser.password ) ){
+                next(createError(400, "Wrong Password !"));
+            }else {
+                const token = createToken({ id: loginUser._id }, '365d');
+
+                res.status(201).cookie('authToken', token).json({
+                    message : "User login successful :)",
+                    user : loginUser,
+                    token : token
+                });
+            }
+
+        }
+
+    } catch (error) {
+        next(error);
+    }
 
 } 
 
