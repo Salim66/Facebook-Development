@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser());
 
 // initialize environmet 
-const PORT = process.env.SERVER_PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 // Routes
 app.use('/api/v1/user', userRouter)

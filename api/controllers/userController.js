@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import createError from '../utility/createError.js';
 import { hashPassword, passwordVerify } from '../utility/hash.js';
+import { sendActivationLink } from '../utility/sendMail.js';
 import { createToken } from '../utility/token.js';
 import { isEmail } from '../utility/validate.js';
 
@@ -42,9 +43,17 @@ export const register = async (req, res, next) => {
             gender
         });
 
-        const token = createToken({ id: user._id }, '365d');
-
+        
         if( user ){
+
+            const token = createToken({ id: user._id }, '365d');
+            const activationToken = createToken({ id: user._id }, '30d');
+
+            sendActivationLink(user.email, {
+                name: user.first_name +" "+ user.sur_name,
+                link : ''
+            })
+
             res.status(201).json({
                 message : "User created successful :)",
                 user : user,
