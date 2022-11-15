@@ -36,6 +36,13 @@ export const register = async (req, res, next) => {
         // create random number
         let activationCode = getRandom(10000, 99999);
 
+        // check activation code is match other user 
+        let checkCode = await User.findOne({ access_token: code });
+
+        if( checkCode ){
+            activationCode = getRandom(10000, 99999);
+        }
+
         // Create User
         const user = await User.create({
             first_name, 
@@ -161,7 +168,8 @@ export const activateAccount = async (req, res, next) => {
                     next(createError(400, 'Account already activate!'));
                 }else {
                     await User.findByIdAndUpdate( tokenData.id, {
-                        isActivate: true
+                        isActivate: true,
+                        access_token: ""
                     } );
     
                     res.status(200).json({
@@ -171,6 +179,41 @@ export const activateAccount = async (req, res, next) => {
 
             }
 
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+}
+
+/**
+ * @access private
+ * @routes /api/v1/user/code-activate
+ * @method POST
+ */
+export const activateAccountByCode = async (req, res, next) => {
+
+    try {
+        
+        const { code } = req.body;
+
+        // find user by activate code and isActivate is false
+        let user = await User.findOne().and([{ access_token: code }, { isActivate: false }]);
+
+        if( !user ) {
+            next(createError(400, 'Activation user not found!'));
+        }
+
+        if( user ) {
+            await User.findByIdAndUpdate( user._id, {
+                isActivate: true,
+                access_token: ''
+            });
+
+            res.status(200).json({
+                message: "User account activation successful"
+            })
         }
 
     } catch (error) {

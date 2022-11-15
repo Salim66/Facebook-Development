@@ -1,5 +1,5 @@
 import express from 'express';
-import { loggedInUser, login, register, activateAccount } from '../controllers/userController.js';
+import { loggedInUser, login, register, activateAccount, activateAccountByCode } from '../controllers/userController.js';
 
 
 
@@ -12,6 +12,7 @@ router.post('/login', login);
 router.post('/register', register);
 router.get('/me', loggedInUser);
 router.get('/activate/:token', activateAccount);
+router.post('/code-activate', activateAccountByCode);
 
 
 // Export default router
