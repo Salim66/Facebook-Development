@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import createError from '../utility/createError.js';
 import { hashPassword, passwordVerify } from '../utility/hash.js';
+import { getRandom } from '../utility/math.js';
 import { sendActivationLink } from '../utility/sendMail.js';
 import { createToken } from '../utility/token.js';
 import { isEmail } from '../utility/validate.js';
@@ -32,6 +33,9 @@ export const register = async (req, res, next) => {
             next(createError(400, 'Email already exists !'));
         }
 
+        // create random number
+        let activationCode = getRandom(10000, 99999);
+
         // Create User
         const user = await User.create({
             first_name, 
@@ -40,24 +44,25 @@ export const register = async (req, res, next) => {
             birth_date, 
             birth_month, 
             birth_year, 
-            gender
+            gender,
+            access_token: activationCode
         });
 
         
         if( user ){
 
-            const token = createToken({ id: user._id }, '365d');
+            // create a activation token
             const activationToken = createToken({ id: user._id }, '30d');
 
             sendActivationLink(user.email, {
                 name: user.first_name +" "+ user.sur_name,
-                link : ''
+                link : `${process.env.APP_URL +':'+ process.env.PORT}/activate/${activationToken}`,
+                code: activationCode
             })
 
             res.status(201).json({
                 message : "User created successful :)",
-                user : user,
-                token : token
+                user : user
             });
         }
 
