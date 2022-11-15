@@ -132,7 +132,43 @@ export const login = async (req, res, next) => {
  */
 export const loggedInUser = async (req, res, next) => {
     
-    res.send('Logged In User Okey');
+    try {
+        
+        const auth_token = req.headers.authorization;
+        
+        if( !auth_token ) {
+            next(createError(400, 'Token not found!'));
+        }
+
+        if( auth_token ) {
+
+            const token = auth_token.split(' ')[1];
+            const user = tokenVerify(token);
+
+            if( !user ) {
+                next(createError(400, 'Invalid Token!'));
+            }else {
+
+                const loggedInUser = await User.findById(user.id);
+
+                if( !loggedInUser ){
+                    next(createError(400, 'User data not match'));
+                }else {
+
+                    res.status(200).json({
+                        message: "User data stable",
+                        user: loggedInUser
+                    });
+
+                }
+
+            }
+
+        }
+
+    } catch (error) {
+       next(error); 
+    }
 
 } 
 
