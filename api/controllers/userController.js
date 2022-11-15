@@ -154,13 +154,20 @@ export const activateAccount = async (req, res, next) => {
             
             if( tokenData ){
 
-                await User.findByIdAndUpdate( tokenData.id, {
-                    isActivate: true
-                } );
+                // get current register user 
+                const user = await User.findById( tokenData.id );
 
-                res.status(200).json({
-                    message: "Account activate successful"
-                });
+                if( user.isActivate == true ){
+                    next(createError(400, 'Account already activate!'));
+                }else {
+                    await User.findByIdAndUpdate( tokenData.id, {
+                        isActivate: true
+                    } );
+    
+                    res.status(200).json({
+                        message: "Account activate successful"
+                    });
+                }                
 
             }
 
