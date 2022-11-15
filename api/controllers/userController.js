@@ -3,13 +3,13 @@ import createError from '../utility/createError.js';
 import { hashPassword, passwordVerify } from '../utility/hash.js';
 import { getRandom } from '../utility/math.js';
 import { sendActivationLink } from '../utility/sendMail.js';
-import { createToken } from '../utility/token.js';
+import { createToken, tokenVerify } from '../utility/token.js';
 import { isEmail } from '../utility/validate.js';
 
 
 /**
  * @access public
- * @route api/v1/register 
+ * @route api/v1/user/register 
  * @method POST
  */
 export const register = async (req, res, next) => {
@@ -56,7 +56,7 @@ export const register = async (req, res, next) => {
 
             sendActivationLink(user.email, {
                 name: user.first_name +" "+ user.sur_name,
-                link : `${process.env.APP_URL +':'+ process.env.PORT}/activate/${activationToken}`,
+                link : `${process.env.APP_URL +':'+ process.env.PORT}/api/v1/user/activate/${activationToken}`,
                 code: activationCode
             })
 
@@ -74,7 +74,7 @@ export const register = async (req, res, next) => {
 
 /**
  * @access public
- * @route api/v1/login 
+ * @route api/v1/user/login 
  * @method POST
  */
 export const login = async (req, res, next) => {
@@ -120,7 +120,7 @@ export const login = async (req, res, next) => {
 
 /**
  * @access public
- * @route api/v1/me 
+ * @route api/v1/user/me 
  * @method GET
  */
 export const loggedInUser = async (req, res, next) => {
@@ -129,3 +129,45 @@ export const loggedInUser = async (req, res, next) => {
 
 } 
 
+/**
+ * @access private
+ * @route /api/v1/user/activate/:token
+ * @method GET 
+ */
+export const activateAccount = async (req, res, next) => {
+
+    try {
+        
+        // get token
+        let { token } = req.params;
+
+        if( !token ) {
+            next(createError(400, 'Invalid activation url!'));
+        }else {
+
+            // verify token
+            const tokenData = tokenVerify(token);
+
+            if( !tokenData ) {
+                next(createError(400, 'Invalid Token'));
+            }
+            
+            if( tokenData ){
+
+                await User.findByIdAndUpdate( tokenData.id, {
+                    isActivate: true
+                } );
+
+                res.status(200).json({
+                    message: "Account activate successful"
+                });
+
+            }
+
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+}
