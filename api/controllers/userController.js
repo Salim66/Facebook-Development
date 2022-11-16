@@ -2,7 +2,7 @@ import User from '../models/User.js';
 import createError from '../utility/createError.js';
 import { hashPassword, passwordVerify } from '../utility/hash.js';
 import { getRandom } from '../utility/math.js';
-import { sendActivationLink } from '../utility/sendMail.js';
+import { sendActivationLink, sendForgotPasswordLink } from '../utility/sendMail.js';
 import { createToken, tokenVerify } from '../utility/token.js';
 import { isEmail } from '../utility/validate.js';
 
@@ -250,6 +250,58 @@ export const activateAccountByCode = async (req, res, next) => {
             res.status(200).json({
                 message: "User account activation successful"
             })
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+}
+
+/**
+ * @access public
+ * @routes /api/v1/user/forgot-password
+ */
+export const forgotPassword = async (req, res, next) => {
+
+    try {
+        
+        // get email
+        const { email } = req.body;
+        
+        // find user by email
+        const user = await User.findOne({ email: email });
+
+        if( !user ) {
+            next(createError(400, "User not found, this email!"));
+        }
+
+        if( user ) {
+
+            // create random number
+            let resetCode = getRandom(10000, 99999);
+
+            // check reset code is match other user 
+            let checkCode = await User.findOne({ access_token: resetCode });
+
+            if( checkCode ){
+                resetCode = getRandom(10000, 99999);
+            }
+
+
+            // create a password reset token
+            const activationToken = createToken({ id: user._id }, '30d');
+
+            sendForgotPasswordLink(user.email, {
+                name: user.first_name +" "+ user.sur_name,
+                link : `${process.env.APP_URL +':'+ process.env.PORT}/api/v1/user/forgot-password/${activationToken}`,
+                code: resetCode
+            })
+
+            res.status(201).json({
+                message : "A password reset link has sent to your email"
+            })
+
         }
 
     } catch (error) {
