@@ -309,3 +309,57 @@ export const forgotPassword = async (req, res, next) => {
     }
 
 }
+
+
+/**
+ * @access private
+ * @route /api/v1/user/forgot-password/:token
+ * @method POST 
+ */
+ export const resetPasswordAction = async (req, res, next) => {
+
+    try {
+        
+        // get token
+        let { token } = req.params;
+        // get body data
+        let { password } = req.body;
+
+        if( !token ) {
+            next(createError(400, 'Invalid activation url!'));
+        }else {
+
+            // verify token
+            const tokenData = tokenVerify(token);
+
+            if( !tokenData ) {
+                next(createError(400, 'Invalid Token'));
+            }
+            
+            if( tokenData ){
+
+                // get current register user 
+                const user = await User.findById( tokenData.id );
+
+                if( !user ){
+                    next(createError(400, 'User not found!'));
+                }else {
+                    await User.findByIdAndUpdate( user._id, {
+                        password: hashPassword(password),
+                        access_token: ""
+                    } );
+    
+                    res.status(200).json({
+                        message: "Changed password successful"
+                    });
+                }                
+
+            }
+
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+}
