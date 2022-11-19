@@ -389,7 +389,7 @@ Components
 }
 
 .reg-form-inline input {
-  width: 49%;
+  width: 99%;
 }
 
 .reg-form-select {
@@ -1070,4 +1070,127 @@ Components
   li:nth-child(5)
   .user-menu-icon {
   background-position: 0px -342px;
+}
+
+.auth__input-p {
+  width: 50%;
+  position: relative;
+}
+
+.error__border-color {
+  border-color: red !important;
+}
+
+.f__name{
+  font-size: 13px !important;
+  color: #FFF !important;
+  width: 200px;
+  height: 40px;
+  background-color: rgb(141, 44, 44);
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  position: absolute;
+  top: 0;
+  left: -220px;
+  visibility: hidden;
+}
+
+.f__name span {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 0 10px 20px;
+  border-color: transparent transparent transparent rgb(141, 44, 44);
+  position: absolute;
+  top: 10px;
+  right: -20px;
+}
+
+.s__name{
+  font-size: 13px !important;
+  color: #FFF !important;
+  width: 200px;
+  height: 40px;
+  background-color: rgb(141, 44, 44);
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  position: absolute;
+  top: 0;
+  right: -220px;
+  visibility: hidden;
+}
+
+.s__name span {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 20px 10px 0;
+  border-color: transparent rgb(141, 44, 44) transparent transparent;
+  position: absolute;
+  top: 10px;
+  left: -20px;
+}
+
+.auth__input--p {
+  position: relative;
+}
+
+.auth__input--p input {
+  width: 100%;
+}
+
+.m__name{
+  font-size: 13px !important;
+  color: #FFF !important;
+  width: 100%;
+  height: 60px;
+  background-color: rgb(141, 44, 44);
+  display: flex;
+  align-items: center;
+  padding: 10px 0px 10px 20px;
+  position: absolute;
+  top: 45px;
+  left: 0px;
+  visibility: hidden;
+  z-index: 1;
+}
+
+.m__name span {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent rgb(141, 44, 44) transparent;
+  position: absolute;
+  top: -7px;
+  left: 0px;
+}
+
+
+.p__name{
+  font-size: 13px !important;
+  color: #FFF !important;
+  width: 400px;
+  height: 60px;
+  background-color: rgb(141, 44, 44);
+  display: flex;
+  align-items: center;
+  padding: 10px 0px 10px 20px;
+  position: absolute;
+  top: 0;
+  right: -420px;
+  visibility: hidden;
+}
+
+.p__name span {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 20px 10px 0;
+  border-color: transparent rgb(141, 44, 44) transparent transparent;
+  position: absolute;
+  top: 10px;
+  left: -20px;
 }
