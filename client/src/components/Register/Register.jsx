@@ -2,6 +2,16 @@ import React from 'react';
 import { useState } from 'react';
 import Cross from '../../_assets/icons/cross.png';
 
+// day of the month
+const days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
+
+// months name
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nav", "Dec"];
+
+// Years 
+const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
+console.log(years);
+
 const Register = ({ setRegister }) => {
 
     // input state
@@ -9,7 +19,11 @@ const Register = ({ setRegister }) => {
         fname: '',
         sname: '',
         numberOrMobile: '',
-        password: ''
+        password: '',
+        day: '',
+        month: '',
+        year: '',
+        gender: ''
     });
 
     // validation state
@@ -17,7 +31,8 @@ const Register = ({ setRegister }) => {
         fname: false,
         sname: false,
         numberOrMobile: false,
-        password: false
+        password: false,
+        gender: false
     });
 
     // hanlde input
@@ -203,14 +218,26 @@ const Register = ({ setRegister }) => {
                     <div className="reg-form">
                     <span>Date of birth</span>
                     <div className="reg-form-select">
-                        <select name="" id="">
-                            <option value="">Day</option>
+                        <select name="day" id="" onChange={ handleInput } >
+                            {
+                                days.map( item => (
+                                    <option value={item}>{item}</option>
+                                ))
+                            }
                         </select>
-                        <select name="" id="">
-                            <option value="">Month</option>
+                        <select name="month" id="" onChange={ handleInput } >
+                            {
+                                months.map( item => (
+                                    <option value={item}>{item}</option>
+                                ))
+                            }
                         </select>
-                        <select name="" id="">
-                            <option value="">Year</option>
+                        <select name="year" id="" onChange={ handleInput } >
+                            {
+                                years.map( item => (
+                                    <option value={item}>{item}</option>
+                                ))
+                            }
                         </select>
                     </div>
                     </div>
@@ -220,15 +247,15 @@ const Register = ({ setRegister }) => {
                     <div className="reg-form-select">
                         <label>
                             Female
-                            <input type="radio" name="gender" />
+                            <input type="radio" name="gender" value="Female" onChange={ handleInput } />
                         </label>
                         <label>
                             Male
-                            <input type="radio" name="gender" />
+                            <input type="radio" name="gender" value="Male" onChange={ handleInput } />
                         </label>
                         <label>
                             Custom
-                            <input type="radio" name="gender" />
+                            <input type="radio" name="gender" value="Custom" onChange={ handleInput } />
                         </label>
                     </div>
                     </div>
