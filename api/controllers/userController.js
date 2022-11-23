@@ -37,7 +37,7 @@ export const register = async (req, res, next) => {
         let activationCode = getRandom(10000, 99999);
 
         // check activation code is match other user 
-        let checkCode = await User.findOne({ access_token: code });
+        let checkCode = await User.findOne({ access_token: activationCode });
 
         if( checkCode ){
             activationCode = getRandom(10000, 99999);

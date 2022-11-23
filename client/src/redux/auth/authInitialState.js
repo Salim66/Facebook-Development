@@ -2,7 +2,7 @@
 
 // create inital state
 const authInitialState = {
-    user: [],
+    user: {},
     loginState: false,
     loading: false,
     message: ''

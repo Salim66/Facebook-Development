@@ -1,5 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { userRegister } from '../../redux/auth/authAction';
+import { createToast } from '../../utility/toast';
 import Cross from '../../_assets/icons/cross.png';
 
 // day of the month
@@ -180,6 +183,31 @@ const Register = ({ setRegister }) => {
         p_name_data.style.visibility = 'hidden';
     }
 
+    const dispatch = useDispatch();
+
+    // Handle register form 
+    const handleRegisterForm = (e) => {
+        e.preventDefault();
+        
+        
+        // validate input field is empty
+        if( !input.fname || !input.sname || !input.numberOrMobile || !input.day || !input.month || !input.year || !input.gender ){
+            createToast("All fields are required!");
+        }else {
+            dispatch(userRegister({
+                first_name: input.fname,
+                sur_name: input.sname,
+                email: input.numberOrMobile,
+                password: input.password,
+                birth_date: input.day,
+                birth_month: input.month,
+                birth_year: input.year,
+                gender: input.gender
+            }, setInput, e, setRegister));
+        }
+
+    }
+
   return (
     <>
         <div className="blur-box">
@@ -192,7 +220,7 @@ const Register = ({ setRegister }) => {
                 <button><img src={ Cross } alt="" onClick={ () => setRegister(false) } /></button>
                 </div>
                 <div className="sign-up-body">
-                <form action="">
+                <form onSubmit={ handleRegisterForm }>
                     <div className="reg-form reg-form-inline">
                         <p className='auth__input-p'>
                             <input type="text" className={ validate.fname && "error__border-color" } placeholder="First Name" name='fname' value={input.fname} onChange={ handleInput } onBlur={ handleInputValidation } onFocus={ handleFNameValidationByFocus } onKeyPress={ handleInputValidationByKeyPress } />
@@ -220,22 +248,22 @@ const Register = ({ setRegister }) => {
                     <div className="reg-form-select">
                         <select name="day" id="" onChange={ handleInput } >
                             {
-                                days.map( item => (
-                                    <option value={item}>{item}</option>
+                                days.map( (item, index) => (
+                                    <option key={index} value={item}>{item}</option>
                                 ))
                             }
                         </select>
                         <select name="month" id="" onChange={ handleInput } >
                             {
-                                months.map( item => (
-                                    <option value={item}>{item}</option>
+                                months.map( (item, index) => (
+                                    <option key={index} value={item}>{item}</option>
                                 ))
                             }
                         </select>
                         <select name="year" id="" onChange={ handleInput } >
                             {
-                                years.map( item => (
-                                    <option value={item}>{item}</option>
+                                years.map( (item, index) => (
+                                    <option key={index} value={item}>{item}</option>
                                 ))
                             }
                         </select>
