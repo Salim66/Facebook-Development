@@ -67,7 +67,7 @@ export const register = async (req, res, next) => {
                 code: activationCode
             })
 
-            res.status(201).json({
+            res.status(201).cookie('otp', user.email, { expires: new Date(Date.now() + 1000*60*15)}).json({
                 message : "User created successful :)",
                 user : user
             });

@@ -2,20 +2,25 @@ import React from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { userRegister } from '../../redux/auth/authAction';
+import { getMonthShortName } from '../../utility/shortMonthName';
 import { createToast } from '../../utility/toast';
 import Cross from '../../_assets/icons/cross.png';
+import { useNavigate } from 'react-router-dom';
 
 // day of the month
 const days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
 
 // months name
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nav", "Dec"];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 // Years 
 const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
 console.log(years);
 
 const Register = ({ setRegister }) => {
+
+    // navigate
+    const navigate = useNavigate();
 
     // input state
     const [input, setInput] = useState({
@@ -203,10 +208,13 @@ const Register = ({ setRegister }) => {
                 birth_month: input.month,
                 birth_year: input.year,
                 gender: input.gender
-            }, setInput, e, setRegister));
+            }, setInput, e, setRegister, navigate));
         }
 
     }
+
+    // current data 
+    const d = new Date();
 
   return (
     <>
@@ -248,15 +256,15 @@ const Register = ({ setRegister }) => {
                     <div className="reg-form-select">
                         <select name="day" id="" onChange={ handleInput } >
                             {
-                                days.map( (item, index) => (
-                                    <option key={index} value={item}>{item}</option>
-                                ))
+                                days.map( (item, index) => {
+                                    return <option key={index} value={item} selected={d.getDate() == item ? 'selected' : '' }  >{item}</option>
+                                })
                             }
                         </select>
                         <select name="month" id="" onChange={ handleInput } >
                             {
                                 months.map( (item, index) => (
-                                    <option key={index} value={item}>{item}</option>
+                                    <option key={index} value={item} selected={getMonthShortName(d.getMonth() + 1) == item ? 'selected' : '' }>{item}</option>
                                 ))
                             }
                         </select>
