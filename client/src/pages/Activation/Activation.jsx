@@ -37,7 +37,7 @@ const Activation = () => {
     const handleContinueCode = (e) => {
         e.preventDefault();
         if(!code) {
-            createToast("Set a OTP code first", 'warn');
+            createToast("OTP code is required!", 'warn');
         }else {
             dispatch(
                 activationByOTP(code, user_activation_email, navigate)

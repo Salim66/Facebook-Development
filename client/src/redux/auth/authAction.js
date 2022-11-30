@@ -56,7 +56,7 @@ export const activationByOTP = (code, email, navigate) => async (dispatch) => {
             navigate('/login');
         })
         .catch(error => {
-            createToast(error.response.data.message);
+            createToast(error.response.data.message, 'warn');
         })
     } catch (error) {
         createToast(error.response.data.message);

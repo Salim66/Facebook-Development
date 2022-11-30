@@ -291,21 +291,31 @@ export const activateAccountByCode = async (req, res, next) => {
         const { code, email } = req.body;
 
         // find user by activate code and isActivate is false
-        let user = await User.findOne().and([{ email: email }, { access_token: code }, { isActivate: false }]);
+        let user = await User.findOne().and([{ email: email }]);
 
         if( !user ) {
-            next(createError(400, 'Activation user not found!'));
-        }
+            next(createError(404, 'Activation user not found!'));
+        }else {
 
-        if( user ) {
-            await User.findByIdAndUpdate( user._id, {
-                isActivate: true,
-                access_token: ''
-            });
+            if( user.isActivate == true ){
+                next(createError(404, 'Your account is already activate!'));
+            }else {
+                
+                if( user.access_token != code ){
+                    next(createError(404, 'OTP code is not match!'));
+                }else {
+                    await User.findByIdAndUpdate( user._id, {
+                        isActivate: true,
+                        access_token: ''
+                    });
+        
+                    res.status(200).json({
+                        message: "User account activation successful"
+                    })
+                }
 
-            res.status(200).json({
-                message: "User account activation successful"
-            })
+            }
+
         }
 
     } catch (error) {
