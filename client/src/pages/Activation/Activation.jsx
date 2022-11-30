@@ -4,7 +4,7 @@ import Footer from '../../components/Footer/Footer';
 import FacebookIcon from '../../_assets/icons/facebook.svg';
 import Cookie from 'js-cookie';
 import { createToast } from '../../utility/toast';
-import { activationByOTP } from '../../redux/auth/authAction';
+import { activationByOTP, resendActivationLink } from '../../redux/auth/authAction';
 import { useDispatch } from 'react-redux';
 
 const Activation = () => {
@@ -40,9 +40,17 @@ const Activation = () => {
             createToast("Set a OTP code first", 'warn');
         }else {
             dispatch(
-                activationByOTP(code, navigate)
+                activationByOTP(code, user_activation_email, navigate)
             );
         }
+    }
+
+    // handle resend code
+    const handleResendCode = (e) => {
+        e.preventDefault();
+        dispatch(
+            resendActivationLink(user_activation_email)
+        )
     }
 
   return (
@@ -81,7 +89,7 @@ const Activation = () => {
                     </div>
                 </div>
                 <div className="reset-footer">
-                    <a href="#">Didn't get a code?</a>
+                    <a onClick={ handleResendCode } href="#">Didn't get a code?</a>
                     <div className="reset-btns">
                     <a onClick={ handleActivationCancel } className="cancel" href="#">Cancel</a>
                     <a onClick={ handleContinueCode } className="continue" href="#">Continue</a>

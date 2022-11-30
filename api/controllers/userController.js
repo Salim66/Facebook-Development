@@ -79,6 +79,62 @@ export const register = async (req, res, next) => {
 
 } 
 
+
+
+/**
+ * @access public
+ * @route api/v1/user/resend-code-activate 
+ * @method POST
+ */
+export const activateCodeResend = async (req, res, next) => {
+    
+    try {
+
+        const { email } = req.body;
+
+        const emailUser = await User.findOne({ email : email }).and([ { isActivate: false } ]);
+
+        if( !emailUser ){
+            next(createError(400, 'Invalid request send !'));
+        }
+
+        if( emailUser ) {
+            // create random number
+            let activationCode = getRandom(10000, 99999);
+
+            // check activation code is match other user 
+            let checkCode = await User.findOne({ access_token: activationCode });
+
+            if( checkCode ){
+                activationCode = getRandom(10000, 99999);
+            }
+
+            await User.findByIdAndUpdate(emailUser._id, { 
+                access_token: activationCode
+            })
+
+            // create a activation token
+            const activationToken = createToken({ id: emailUser._id }, '30d');
+
+            sendActivationLink(emailUser.email, {
+                 name: emailUser.first_name +" "+ emailUser.sur_name,
+                 link : `${process.env.APP_URL +':'+ process.env.PORT}/api/v1/user/activate/${activationToken}`,
+                 code: activationCode
+            })
+ 
+            res.status(201).cookie('otp', emailUser.email, { expires: new Date(Date.now() + 1000*60*15)}).json({
+                 message : "Resend link has been send :)",
+             });
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+} 
+
+
+
 /**
  * @access public
  * @route api/v1/user/login 
@@ -232,10 +288,10 @@ export const activateAccountByCode = async (req, res, next) => {
 
     try {
         
-        const { code } = req.body;
+        const { code, email } = req.body;
 
         // find user by activate code and isActivate is false
-        let user = await User.findOne().and([{ access_token: code }, { isActivate: false }]);
+        let user = await User.findOne().and([{ email: email }, { access_token: code }, { isActivate: false }]);
 
         if( !user ) {
             next(createError(400, 'Activation user not found!'));
