@@ -202,7 +202,7 @@ const Register = ({ setRegister }) => {
             dispatch(userRegister({
                 first_name: input.fname,
                 sur_name: input.sname,
-                email: input.numberOrMobile,
+                auth: input.numberOrMobile,
                 password: input.password,
                 birth_date: input.day,
                 birth_month: input.month,

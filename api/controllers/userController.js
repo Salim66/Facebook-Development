@@ -3,8 +3,9 @@ import createError from '../utility/createError.js';
 import { hashPassword, passwordVerify } from '../utility/hash.js';
 import { getRandom } from '../utility/math.js';
 import { sendActivationLink, sendForgotPasswordLink } from '../utility/sendMail.js';
+import sendSMS from '../utility/sendSMS.js';
 import { createToken, tokenVerify } from '../utility/token.js';
-import { isEmail } from '../utility/validate.js';
+import { isEmail, isMobile } from '../utility/validate.js';
 
 
 /**
@@ -17,20 +18,30 @@ export const register = async (req, res, next) => {
     try {
 
         // get form data
-        const { first_name, sur_name, email, password, birth_date, birth_month, birth_year, gender } = req.body;
+        const { first_name, sur_name, auth, password, birth_date, birth_month, birth_year, gender } = req.body;
         
         // validation
-        if( !first_name || !sur_name || !email || !password || !gender ){
+        if( !first_name || !sur_name || !auth || !password || !gender ){
             next(createError(400, 'All fields are required !'));
         }
-        if( !isEmail(email) ){
-            next(createError(400, 'Email is Invalid !'));
-        }
 
-        const emailUser = await User.findOne({ email : email });
+        let emailData = null;
+        let mobileData = null;
 
-        if( emailUser ){
-            next(createError(400, 'Email already exists !'));
+        if(isEmail(auth) ){
+            emailData = auth;
+            let emailCheck = await User.findOne({ email: auth });
+            if(emailCheck){
+                return next(createError(400, 'Email is already exists !'));
+            }
+        }else if(isMobile(auth) ){
+            mobileData = auth;
+            let mobileCheck = await User.findOne({ email: auth });
+            if(mobileCheck){
+                return next(createError(400, 'Mobile is already exists !'));
+            }
+        }else {
+            return next(createError(400, 'Invalid Email or Mobile !'));
         }
 
         // create random number
@@ -46,7 +57,9 @@ export const register = async (req, res, next) => {
         // Create User
         const user = await User.create({
             first_name, 
-            sur_name, email, 
+            sur_name,
+            email: emailData, 
+            mobile: mobileData, 
             password: hashPassword(password), 
             birth_date, 
             birth_month, 
@@ -58,19 +71,34 @@ export const register = async (req, res, next) => {
         
         if( user ){
 
-            // create a activation token
-            const activationToken = createToken({ id: user._id }, '30d');
+            if(emailData){
+                // create a activation token
+                const activationToken = createToken({ id: user._id }, '30d');
 
-            sendActivationLink(user.email, {
-                name: user.first_name +" "+ user.sur_name,
-                link : `${process.env.APP_URL +':'+ process.env.PORT}/api/v1/user/activate/${activationToken}`,
-                code: activationCode
-            })
+                sendActivationLink(user.email, {
+                    name: user.first_name +" "+ user.sur_name,
+                    link : `${process.env.APP_URL +':'+ process.env.PORT}/api/v1/user/activate/${activationToken}`,
+                    code: activationCode
+                })
 
-            res.status(201).cookie('otp', user.email, { expires: new Date(Date.now() + 1000*60*15)}).json({
-                message : "User created successful :)",
-                user : user
-            });
+                res.status(201).cookie('otp', user.email, { expires: new Date(Date.now() + 1000*60*15)}).json({
+                    message : "User created successful :)",
+                    user : user
+                });
+            }
+
+            if(mobileData){
+                // create a activation OTP
+                sendSMS(user.mobile, `Hi ${user.first_name} ${user.sur_name}, your account activation OTP is ${ activationCode }`)
+                
+
+                res.status(201).cookie('otp', user.mobile, { expires: new Date(Date.now() + 1000*60*15)}).json({
+                    message : "User created successful :)",
+                    user : user
+                });
+            }
+
+            
         }
 
     } catch (error) {

@@ -1086,7 +1086,7 @@ Components
   color: #FFF !important;
   width: 200px;
   height: 40px;
-  background-color: rgb(141, 44, 44);
+  background-color: rgb(194, 96, 96);
   display: flex;
   align-items: center;
   padding-left: 20px;
@@ -1101,7 +1101,7 @@ Components
   height: 0;
   border-style: solid;
   border-width: 10px 0 10px 20px;
-  border-color: transparent transparent transparent rgb(141, 44, 44);
+  border-color: transparent transparent transparent rgb(194, 96, 96);
   position: absolute;
   top: 10px;
   right: -20px;
@@ -1112,7 +1112,7 @@ Components
   color: #FFF !important;
   width: 200px;
   height: 40px;
-  background-color: rgb(141, 44, 44);
+  background-color: rgb(194, 96, 96);
   display: flex;
   align-items: center;
   padding-left: 20px;
@@ -1127,7 +1127,7 @@ Components
   height: 0;
   border-style: solid;
   border-width: 10px 20px 10px 0;
-  border-color: transparent rgb(141, 44, 44) transparent transparent;
+  border-color: transparent rgb(194, 96, 96) transparent transparent;
   position: absolute;
   top: 10px;
   left: -20px;
@@ -1146,7 +1146,7 @@ Components
   color: #FFF !important;
   width: 100%;
   height: 60px;
-  background-color: rgb(141, 44, 44);
+  background-color: rgb(194, 96, 96);
   display: flex;
   align-items: center;
   padding: 10px 0px 10px 20px;
@@ -1162,7 +1162,7 @@ Components
   height: 0;
   border-style: solid;
   border-width: 0 10px 10px 10px;
-  border-color: transparent transparent rgb(141, 44, 44) transparent;
+  border-color: transparent transparent rgb(194, 96, 96) transparent;
   position: absolute;
   top: -7px;
   left: 0px;
@@ -1174,7 +1174,7 @@ Components
   color: #FFF !important;
   width: 400px;
   height: 60px;
-  background-color: rgb(141, 44, 44);
+  background-color: rgb(194, 96, 96);
   display: flex;
   align-items: center;
   padding: 10px 0px 10px 20px;
@@ -1189,7 +1189,7 @@ Components
   height: 0;
   border-style: solid;
   border-width: 10px 20px 10px 0;
-  border-color: transparent rgb(141, 44, 44) transparent transparent;
+  border-color: transparent rgb(194, 96, 96) transparent transparent;
   position: absolute;
   top: 10px;
   left: -20px;
