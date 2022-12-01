@@ -7,6 +7,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { createToast } from './utility/toast';
 import Activation from './pages/Activation/Activation';
+import Forgot from './pages/Forgot/Forgot';
+import FindAccount from './pages/FindAccount/FindAccount';
+import Password from './pages/Password/Password';
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
         <Route path="/login" element={ <Auth /> } />
         <Route path="/profile" element={ <Profile /> } />
         <Route path="/activation" element={ <Activation /> } />
+        <Route path="/forgot" element={ <Forgot /> } />
+        <Route path="/find-account" element={ <FindAccount /> } />
+        <Route path="/change-password" element={ <Password /> } />
       </Routes>
     </>
   );

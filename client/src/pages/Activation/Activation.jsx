@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
-import FacebookIcon from '../../_assets/icons/facebook.svg';
 import Cookie from 'js-cookie';
 import { createToast } from '../../utility/toast';
 import { activationByOTP, resendActivationLink } from '../../redux/auth/authAction';
 import { useDispatch } from 'react-redux';
+import ResetHeader from '../../components/ResetHeader/ResetHeader';
 
 const Activation = () => {
 
@@ -55,19 +55,7 @@ const Activation = () => {
 
   return (
     <>
-        <div className="reset-header">
-            <div className="reset-header-wraper">
-                <div className="reset-logo">
-                <img src={ FacebookIcon } alt="" />
-                </div>
-                <div className="login-part">
-                <input type="text" placeholder="Email or mobile number" />
-                <input type="text" placeholder="Password" />
-                <button>Log In</button>
-                <a href="#">Forgotten account?</a>
-                </div>
-            </div>
-        </div>
+        <ResetHeader />
 
         <div className="reset-area">
             <div className="reset-wraper">

@@ -1217,6 +1217,7 @@ Components
 .reset-header-wraper .login-part {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .reset-header .reset-logo img {
@@ -1300,7 +1301,7 @@ Components
   padding: 0px 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 24px;
+  font-size: 14px;
   width: 50%;
 }
 
