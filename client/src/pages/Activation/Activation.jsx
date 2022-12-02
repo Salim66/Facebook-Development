@@ -18,10 +18,10 @@ const Activation = () => {
     const [ code, setCode ] = useState();
 
     // get cookie 
-    const user_activation_email = Cookie.get('otp');
+    const auth = Cookie.get('otp');
     
     useEffect(() => {
-        if(!user_activation_email){
+        if(!auth){
             navigate('/login');
         }
     });
@@ -40,7 +40,7 @@ const Activation = () => {
             createToast("OTP code is required!", 'warn');
         }else {
             dispatch(
-                activationByOTP(code, user_activation_email, navigate)
+                activationByOTP(code, auth, navigate)
             );
         }
     }
@@ -49,7 +49,7 @@ const Activation = () => {
     const handleResendCode = (e) => {
         e.preventDefault();
         dispatch(
-            resendActivationLink(user_activation_email)
+            resendActivationLink(auth)
         )
     }
 
@@ -72,7 +72,7 @@ const Activation = () => {
                     <input type="text" name='code' onChange={ (e) => setCode(e.target.value) } />
                     <div className="code-text">
                         <span>We sent your code to:</span>
-                        <span>{ user_activation_email }</span>
+                        <span>{ auth }</span>
                     </div>
                     </div>
                 </div>

@@ -48,9 +48,9 @@ export const userRegister = (data, setInput, e, setRegister, navigate) => async 
 }
 
 // create activation account by OTP
-export const activationByOTP = (code, email, navigate) => async (dispatch) => {
+export const activationByOTP = (code, auth, navigate) => async (dispatch) => {
     try {
-        const action = await axios.post('/api/v1/user/code-activate', { code: code, email: email })
+        const action = await axios.post('/api/v1/user/code-activate', { code: code, auth: auth })
         .then(res => {
             createToast('Account activation successful, please login', 'success');
             navigate('/login');
@@ -64,9 +64,9 @@ export const activationByOTP = (code, email, navigate) => async (dispatch) => {
 }
 
 // create resend activation link
-export const resendActivationLink = ( email ) => async (dispatch) => {
+export const resendActivationLink = ( auth ) => async (dispatch) => {
     try {
-        const action = await axios.post('/api/v1/user/resend-code-activate', { email: email })
+        const action = await axios.post('/api/v1/user/resend-code-activate', { auth: auth })
         .then(res => {
             createToast(res.data.message, 'success');
         })
