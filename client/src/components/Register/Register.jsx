@@ -15,7 +15,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 // Years 
 const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-console.log(years);
+// console.log(years);
 
 const Register = ({ setRegister }) => {
 
@@ -40,6 +40,9 @@ const Register = ({ setRegister }) => {
         sname: false,
         numberOrMobile: false,
         password: false,
+        day: false,
+        month: false,
+        year: false,
         gender: false
     });
 
@@ -60,6 +63,7 @@ const Register = ({ setRegister }) => {
         let s_name_data = document.getElementById('s__name');
         let m_name_data = document.getElementById('m__name');
         let p_name_data = document.getElementById('p__name');
+
 
         if( !input[fieldName] ) {
             setValidate((prevState) => ({
@@ -175,6 +179,33 @@ const Register = ({ setRegister }) => {
             p_name_data.style.visibility = 'hidden';
         }
     }
+    
+    // handle day validation by on focus
+    const handleDayValidationByFocus = (e) => {
+
+        setValidate({
+            day: false
+        });
+        
+    }
+    
+    // handle day validation by on focus
+    const handleMonthValidationByFocus = (e) => {
+
+        setValidate({
+            month: false
+        });
+        
+    }
+    
+    // handle month validation by on focus
+    const handleYearValidationByFocus = (e) => {
+
+        setValidate({
+            year: false
+        });
+        
+    }
 
     // hamdle input validation by key press
     const handleInputValidationByKeyPress = (e) => {
@@ -188,12 +219,24 @@ const Register = ({ setRegister }) => {
         p_name_data.style.visibility = 'hidden';
     }
 
+    // handle custom gender input box
+    const handleCustomGender = (e) => {
+        let custom_g = document.getElementById('gender_custom_input');
+
+        if(e.target.value == 'Custom'){
+            custom_g.style.visibility = 'visible';
+        }else if(e.target.value == 'Male') {
+            custom_g.style.visibility = 'hidden';
+        }else if(e.target.value == 'Female') {
+            custom_g.style.visibility = 'hidden';
+        }
+    }
+
     const dispatch = useDispatch();
 
     // Handle register form 
     const handleRegisterForm = (e) => {
         e.preventDefault();
-        
         
         // validate input field is empty
         if( !input.fname || !input.sname || !input.numberOrMobile || !input.day || !input.month || !input.year || !input.gender ){
@@ -233,42 +276,46 @@ const Register = ({ setRegister }) => {
                         <p className='auth__input-p'>
                             <input type="text" className={ validate.fname && "error__border-color" } placeholder="First Name" name='fname' value={input.fname} onChange={ handleInput } onBlur={ handleInputValidation } onFocus={ handleFNameValidationByFocus } onKeyPress={ handleInputValidationByKeyPress } />
                             <p className='f__name' id='f__name'>What's your first name?<span></span></p>
+                            <i className={ validate.fname && "fa fa-exclamation-circle" } aria-hidden="true"></i>
                         </p>
                         <p className='auth__input-p'>
                             <input type="text" className={ validate.sname && "error__border-color" } placeholder="Surname" name='sname' value={input.sname} onChange={ handleInput } onBlur={ handleInputValidation } onFocus={ handleSNameValidationByFocus }  onKeyPress={ handleInputValidationByKeyPress } />
                             <p className='s__name' id='s__name'>What's your sur name?<span></span></p>
+                            <i className={ validate.sname && "fa fa-exclamation-circle" } aria-hidden="true"></i>
                         </p>
                     </div>
                     <div className="reg-form">
                         <p className='auth__input--p'>
                             <input type="text" className={ validate.numberOrMobile && "error__border-color" } placeholder="Mobile number or email address" name='numberOrMobile' value={input.numberOrMobile} onChange={ handleInput } onBlur={ handleInputValidation } onFocus={ handleMobileValidationByFocus }  onKeyPress={ handleInputValidationByKeyPress } />
                             <p className='m__name' id='m__name'>You'll use this when you log in and if you ever need to reset your password.<span></span></p>
+                            <i className={ validate.numberOrMobile && "fa fa-exclamation-circle" } aria-hidden="true"></i>
                         </p>
                     </div>
                     <div className="reg-form">
                         <p className='auth__input--p'>
                             <input type="password" className={ validate.password && "error__border-color" } placeholder="New password" name='password' value={input.password} onChange={ handleInput } onBlur={ handleInputValidation } onFocus={ handlePasswordValidationByFocus }  onKeyPress={ handleInputValidationByKeyPress } />
                             <p className='p__name' id='p__name'>Enter a conbination of at least six numbers, letters and punctuation marks (such as ! and &).<span></span></p>
+                            <i className={ validate.password && "fa fa-exclamation-circle" } aria-hidden="true"></i>
                         </p>
                     </div>
                     <div className="reg-form">
-                    <span>Date of birth</span>
+                    <span>Date of birth <i class="fa fa-question-circle" aria-hidden="true"></i></span> 
                     <div className="reg-form-select">
-                        <select name="day" id="" onChange={ handleInput } >
+                        <select name="day" className={ validate.day && "error__border-color" } onBlur={ handleInputValidation } onChange={ handleInput } onFocus={ handleDayValidationByFocus } >
                             {
                                 days.map( (item, index) => {
                                     return <option key={index} value={item} selected={d.getDate() == item ? 'selected' : '' }  >{item}</option>
                                 })
                             }
                         </select>
-                        <select name="month" id="" onChange={ handleInput } >
+                        <select name="month" className={ validate.month && "error__border-color" } onChange={ handleInput } onBlur={ handleInputValidation } onChange={ handleInput } onFocus={ handleMonthValidationByFocus } >
                             {
                                 months.map( (item, index) => (
                                     <option key={index} value={item} selected={getMonthShortName(d.getMonth() + 1) == item ? 'selected' : '' }>{item}</option>
                                 ))
                             }
                         </select>
-                        <select name="year" id="" onChange={ handleInput } >
+                        <select name="year" className={ validate.year && "error__border-color" } onChange={ handleInput } onBlur={ handleInputValidation } onChange={ handleInput } onFocus={ handleYearValidationByFocus } >
                             {
                                 years.map( (item, index) => (
                                     <option key={index} value={item}>{item}</option>
@@ -283,16 +330,21 @@ const Register = ({ setRegister }) => {
                     <div className="reg-form-select">
                         <label>
                             Female
-                            <input type="radio" name="gender" value="Female" onChange={ handleInput } />
+                            <input type="radio" name="gender" value="Female" onChange={ handleInput } onClick={ handleCustomGender } />
                         </label>
                         <label>
                             Male
-                            <input type="radio" name="gender" value="Male" onChange={ handleInput } />
+                            <input type="radio" name="gender" value="Male" onChange={ handleInput } onClick={ handleCustomGender } />
                         </label>
                         <label>
                             Custom
-                            <input type="radio" name="gender" value="Custom" onChange={ handleInput } />
+                            <input type="radio" name="gender" value="Custom" onClick={ handleCustomGender } />
                         </label>
+                    </div>
+                    <div className="reg-form gender_custom">
+                        <p className='auth__input--p'>
+                            <input type="text" id='gender_custom_input' className='gender_custom_input' placeholder="Gender (optional)" name="gender" value={input.gender} onChange={ handleInput } />
+                        </p>
                     </div>
                     </div>
 
