@@ -1,11 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import ResetHeader from '../../components/ResetHeader/ResetHeader';
 import User from '../../_assets/images/user.png';
+import Cookie from 'js-cookie';
+import { hideMobileOrEmail } from '../../utility/helper';
 
 const FindAccount = () => {
-  return (
+
+    // local state
+    const [findUser, setFindUser] = useState({
+        name: "",
+        email: "",
+        mobile: "",
+        photo: ""
+    });
+    const navigate = useNavigate();
+
+    // handle not you
+    const handleNotYou = (e) => {
+        e.preventDefault();
+        Cookie.remove('findUser');
+        navigate('/forgot');
+    }
+
+    useEffect(() => {
+      const userData = JSON.parse(Cookie.get('findUser')) || null;
+      setFindUser((prevData) => ({
+        ...userData
+      }))
+    }, [])
+
+
+  return ( 
     <>
         <ResetHeader />
 
@@ -17,15 +45,21 @@ const FindAccount = () => {
                 </div>
                 <div class="reset-body">
                     <div class="find-user-account">
-                    <img src={ User } alt="" />
-                    <span>Asraful Haque</span>
+                    <img src={ findUser.photo ? findUser.photo : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png' } alt="" />
+                    <span>{ findUser.name }</span>
+                    { findUser.email && (
+                        <p>Email : { hideMobileOrEmail(findUser.email) }</p>
+                    )}
+                    { findUser.mobile && (
+                        <p>Mobile : { hideMobileOrEmail(findUser.mobile) }</p>
+                    )}
                     <p>To reset your account password, please continue</p>
                     </div>
                 </div>
                 <div class="reset-footer">
                     <a href="#"></a>
                     <div class="reset-btns">
-                    <Link class="cancel" to="/login">Not you ?</Link>
+                    <a onClick={handleNotYou} class="cancel" href='#'>Not you ?</a>
                     <a class="continue" href="/password">Continue</a>
                     </div>
                 </div>

@@ -492,3 +492,51 @@ export const forgotPassword = async (req, res, next) => {
     }
 
 }
+
+
+/**
+ * @access private
+ * @route /api/v1/user/find-user-account
+ * @method POST 
+ */
+export const findUserAccount = async (req, res, next) => {
+    const { auth } = req.body;
+
+    try {
+
+        if(isEmail(auth) ){
+            let emailCheck = await User.findOne({ email: auth });
+            if(!emailCheck){
+                return next(createError(400, 'Email user is not found !'));
+            }else {
+                return res.status(200).cookie('findUser', JSON.stringify({
+                    name: emailCheck.first_name + " " + emailCheck.sur_name,
+                    email: emailCheck.email,
+                    mobile: emailCheck.mobile,
+                    photo: emailCheck.profile_photo
+                }), { expires: new Date(Date.now() + 1000*60*15)}).json({
+                    user : emailCheck
+                });
+            }
+        }else if(isMobile(auth) ){
+            let mobileCheck = await User.findOne({ mobile: auth });
+            if(!mobileCheck){
+                return next(createError(400, 'Mobile user is not found !'));
+            }else {
+                return res.status(200).cookie('findUser', JSON.stringify({
+                    name: mobileCheck.first_name + " " + mobileCheck.sur_name,
+                    email: mobileCheck.email,
+                    mobile: mobileCheck.mobile,
+                    photo: mobileCheck.profile_photo
+                }), { expires: new Date(Date.now() + 1000*60*15)}).json({
+                    user : mobileCheck
+                });
+            }
+        }else {
+            return next(createError(400, 'Invalid Email or Mobile !'));
+        }
+
+    } catch (error) {
+        next(error);
+    }
+}
