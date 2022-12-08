@@ -1,11 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import ResetHeader from '../../components/ResetHeader/ResetHeader';
 import User from '../../_assets/images/user.png';
 import Cookie from 'js-cookie';
 import { hideMobileOrEmail } from '../../utility/helper';
+import { createToast } from '../../utility/toast';
 
 const FindAccount = () => {
 
@@ -32,19 +34,33 @@ const FindAccount = () => {
       }))
     }, [])
 
+    // send password reset link
+    const handlePasswordResetLink = async (e) => {
+        e.preventDefault();
+        await axios.post('/api/v1/user/send-password-reset-link', {
+            auth: findUser.email ?? findUser.mobile 
+        })
+        .then(res => {
+            createToast(res.data.message, 'success');
+            navigate('/activation');
+        })
+        .catch(error => {
+            createToast(error.response.data.message);
+        })
+    }
 
   return ( 
     <>
         <ResetHeader />
 
-        <div class="reset-area">
-            <div class="reset-wraper">
-                <div class="reset-box">
-                <div class="reset-box-header">
-                    <span class="title">Reset your password</span>
+        <div className="reset-area">
+            <div className="reset-wraper">
+                <div className="reset-box">
+                <div className="reset-box-header">
+                    <span className="title">Reset your password</span>
                 </div>
-                <div class="reset-body">
-                    <div class="find-user-account">
+                <div className="reset-body">
+                    <div className="find-user-account">
                     <img src={ findUser.photo ? findUser.photo : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png' } alt="" />
                     <span>{ findUser.name }</span>
                     { findUser.email && (
@@ -56,11 +72,11 @@ const FindAccount = () => {
                     <p>To reset your account password, please continue</p>
                     </div>
                 </div>
-                <div class="reset-footer">
+                <div className="reset-footer">
                     <a href="#"></a>
-                    <div class="reset-btns">
-                    <a onClick={handleNotYou} class="cancel" href='#'>Not you ?</a>
-                    <a class="continue" href="/password">Continue</a>
+                    <div className="reset-btns">
+                    <a onClick={handleNotYou} className="cancel" href='#'>Not you ?</a>
+                    <a onClick={handlePasswordResetLink} className="continue" href="#">Continue</a>
                     </div>
                 </div>
                 </div>
