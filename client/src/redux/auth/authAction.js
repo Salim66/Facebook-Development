@@ -77,3 +77,19 @@ export const resendActivationLink = ( auth ) => async (dispatch) => {
         createToast(error.response.data.message);
     }
 }
+
+// create check reset password otp
+export const checkPasswordResetOTP = (code, auth, navigate) => async (dispatch) => {
+    try {
+        const action = await axios.post('/api/v1/user/check-password-reset-link', { code: code, auth: auth })
+        .then(res => {
+            createToast(res.data.message, 'success');
+            navigate('/change-password');
+        })
+        .catch(error => {
+            createToast(error.response.data.message, 'warn');
+        })
+    } catch (error) {
+        createToast(error.response.data.message);
+    }
+}

@@ -614,3 +614,59 @@ export const findUserAccount = async (req, res, next) => {
     }
 
 } 
+
+
+/**
+ * @access public
+ * @route api/v1/user/check-password-reset-link
+ * @method POST
+ */
+ export const checkPasswordResetLink = async (req, res, next) => {
+    
+    try {
+
+        const { code, auth } = req.body;
+
+        if(isEmail(auth) ){
+            let userData = await User.findOne().where("email").equals(auth);
+            
+            if(!userData){
+                return next(createError(400, "Invalid user request!"));
+            }
+
+            if(userData){
+                if(userData.access_token != code){
+                    return next(createError(400, "Invalid OTP code!"));
+                }
+
+                if(userData.access_token == code){
+                    return res.status(200).cookie('cpid', userData._id.toString(), { expires: new Date(Date.now() + 1000*60*15)}).json({
+                        message : "You can change your password :)",
+                    });
+                }
+            }
+        }else if(isMobile(auth) ){
+            let userData = await User.findOne().where("mobile").equals(auth);
+            if(!userData){
+                return next(createError(400, "Invalid user request!"));
+            }
+            if(userData){
+                if(userData.access_token != code){
+                    return next(400, "Invalid OTP code!");
+                }
+
+                if(userData.access_token == code){
+                    return res.status(200).cookie('cpid', userData._id.toString(), { expires: new Date(Date.now() + 1000*60*15)}).json({
+                        message : "You can change your password :)",
+                    });
+                }
+            }
+        }else {
+            return next(createError(400, 'Invalid Email or Mobile !'));
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+} 

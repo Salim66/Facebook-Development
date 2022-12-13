@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import Cookie from 'js-cookie';
 import { createToast } from '../../utility/toast';
-import { activationByOTP, resendActivationLink } from '../../redux/auth/authAction';
+import { activationByOTP, checkPasswordResetOTP, resendActivationLink } from '../../redux/auth/authAction';
 import { useDispatch } from 'react-redux';
 import ResetHeader from '../../components/ResetHeader/ResetHeader';
 
@@ -58,7 +58,13 @@ const Activation = () => {
     // handle reset password
     const handleResetPassword = (e) => {
         e.preventDefault();
-        alert("Reset Pass");
+        if(!code){
+            createToast("OPT code is required!", "warn");
+        }else {
+            dispatch(
+                checkPasswordResetOTP(code, auth, navigate)
+            );
+        }
     }
 
   return (
