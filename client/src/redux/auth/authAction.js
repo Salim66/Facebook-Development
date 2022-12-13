@@ -27,7 +27,7 @@ export const userRegister = (data, setInput, e, setRegister, navigate) => async 
                 type: REGISTER_SUCCESS,
                 payload: res.data.message
             })
-            navigate('/activation');
+            navigate('/activation/account');
         })
         .catch(error => {
             createToast(error.response.data.message, 'error');

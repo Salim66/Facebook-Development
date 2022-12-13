@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={ <Home /> } />
         <Route path="/login" element={ <Auth /> } />
         <Route path="/profile" element={ <Profile /> } />
-        <Route path="/activation" element={ <Activation /> } />
+        <Route path="/activation/:type" element={ <Activation /> } />
         <Route path="/forgot" element={ <Forgot /> } />
         <Route path="/find-account" element={ <FindAccount /> } />
         <Route path="/change-password" element={ <Password /> } />

@@ -42,7 +42,7 @@ const FindAccount = () => {
         })
         .then(res => {
             createToast(res.data.message, 'success');
-            navigate('/activation');
+            navigate('/activation/reset-pass');
         })
         .catch(error => {
             createToast(error.response.data.message);

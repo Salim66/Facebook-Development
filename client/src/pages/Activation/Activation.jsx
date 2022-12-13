@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import Cookie from 'js-cookie';
 import { createToast } from '../../utility/toast';
@@ -8,6 +8,8 @@ import { useDispatch } from 'react-redux';
 import ResetHeader from '../../components/ResetHeader/ResetHeader';
 
 const Activation = () => {
+
+    const { type } = useParams();
 
     // navigator
     const navigate = useNavigate();
@@ -53,6 +55,12 @@ const Activation = () => {
         )
     }
 
+    // handle reset password
+    const handleResetPassword = (e) => {
+        e.preventDefault();
+        alert("Reset Pass");
+    }
+
   return (
     <>
         <ResetHeader />
@@ -80,7 +88,7 @@ const Activation = () => {
                     <a onClick={ handleResendCode } href="#">Didn't get a code?</a>
                     <div className="reset-btns">
                     <a onClick={ handleActivationCancel } className="cancel" href="#">Cancel</a>
-                    <a onClick={ handleContinueCode } className="continue" href="#">Continue</a>
+                    <a onClick={ type == 'account' ? handleContinueCode : handleResetPassword } className="continue" href="#">Continue</a>
                     </div>
                 </div>
                 </div>
