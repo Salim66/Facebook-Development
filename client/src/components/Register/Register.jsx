@@ -22,15 +22,18 @@ const Register = ({ setRegister }) => {
     // navigate
     const navigate = useNavigate();
 
+     // current data 
+     const d = new Date();
+
     // input state
     const [input, setInput] = useState({
         fname: '',
         sname: '',
         numberOrMobile: '',
         password: '',
-        day: '',
-        month: '',
-        year: '',
+        day: d.getDate(),
+        month: months[d.getMonth()],
+        year: d.getFullYear(),
         gender: ''
     });
 
@@ -256,9 +259,6 @@ const Register = ({ setRegister }) => {
 
     }
 
-    // current data 
-    const d = new Date();
-
   return (
     <>
         <div className="blur-box">
@@ -304,21 +304,21 @@ const Register = ({ setRegister }) => {
                         <select name="day" className={ validate.day && "error__border-color" } onBlur={ handleInputValidation } onChange={ handleInput } onFocus={ handleDayValidationByFocus } >
                             {
                                 days.map( (item, index) => {
-                                    return <option key={index} value={item} selected={d.getDate() == item ? 'selected' : '' }  >{item}</option>
+                                    return <option key={index} value={item} selected={d.getDate() == item ? true : false }  >{item}</option>
                                 })
                             }
                         </select>
                         <select name="month" className={ validate.month && "error__border-color" } onChange={ handleInput } onBlur={ handleInputValidation } onChange={ handleInput } onFocus={ handleMonthValidationByFocus } >
                             {
                                 months.map( (item, index) => (
-                                    <option key={index} value={item} selected={getMonthShortName(d.getMonth() + 1) == item ? 'selected' : '' }>{item}</option>
+                                    <option key={index} value={item} selected={getMonthShortName(d.getMonth() + 1) == item ? true : false }>{item}</option>
                                 ))
                             }
                         </select>
                         <select name="year" className={ validate.year && "error__border-color" } onChange={ handleInput } onBlur={ handleInputValidation } onChange={ handleInput } onFocus={ handleYearValidationByFocus } >
                             {
                                 years.map( (item, index) => (
-                                    <option key={index} value={item}>{item}</option>
+                                    <option key={index} value={item} selected={item === input.year ? true : false }>{item}</option>
                                 ))
                             }
                         </select>
