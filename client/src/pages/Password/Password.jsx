@@ -1,9 +1,29 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import ResetHeader from '../../components/ResetHeader/ResetHeader';
+import { useDispatch } from 'react-redux';
+import { changePassword } from '../../redux/auth/authAction';
+import cookie from 'js-cookie';
 
 const Password = () => {
+
+    // local state
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // handle change password
+    const handleChangePassword = (e) => {
+        e.preventDefault();
+        dispatch(changePassword({
+            id: cookie.get('cpid'),
+            code: cookie.get('cpcode'),
+            password
+        }, navigate));
+    };
+
   return (
     <>
         <ResetHeader />
@@ -21,14 +41,14 @@ const Password = () => {
                     marks.
                     </p>
                     <div class="code-box">
-                    <input class="w-100" type="text" placeholder="New password" />
+                    <input class="w-100" name='password' value={ password } onChange={ (e) => setPassword(e.target.value) } type="text" placeholder="New password" />
                     </div>
                 </div>
                 <div class="reset-footer">
                     <a href="#"></a>
                     <div class="reset-btns">
                     <Link class="cancel" to="/login">Skip</Link>
-                    <a class="continue" href="#">Continue</a>
+                    <a onClick={ handleChangePassword } class="continue" href="#">Continue</a>
                     </div>
                 </div>
                 </div>

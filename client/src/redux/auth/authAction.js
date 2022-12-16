@@ -93,3 +93,19 @@ export const checkPasswordResetOTP = (code, auth, navigate) => async (dispatch) 
         createToast(error.response.data.message);
     }
 }
+
+// create change password with requst to forget password
+export const changePassword = (data, navigate) => async (dispatch) => {
+    try {
+        await axios.post('/api/v1/user/user-password-reset', { id: data.id, code: data.code, password: data.password })
+        .then(res => {
+            createToast(res.data.message, 'success');
+            navigate('/login');
+        })
+        .catch(error => {
+            createToast(error.response.data.message, 'warn');
+        })
+    } catch (error) {
+        createToast(error.response.data.message);
+    }
+}

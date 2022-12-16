@@ -640,7 +640,7 @@ export const findUserAccount = async (req, res, next) => {
                 }
 
                 if(userData.access_token == code){
-                    return res.status(200).cookie('cpid', userData._id.toString(), { expires: new Date(Date.now() + 1000*60*15)}).json({
+                    return res.status(200).cookie('cpid', userData._id.toString(), { expires: new Date(Date.now() + 1000*60*15)}).cookie('cpcode', code, { expires: new Date(Date.now() + 1000*60*15)}).json({
                         message : "You can change your password :)",
                     });
                 }
@@ -656,13 +656,47 @@ export const findUserAccount = async (req, res, next) => {
                 }
 
                 if(userData.access_token == code){
-                    return res.status(200).cookie('cpid', userData._id.toString(), { expires: new Date(Date.now() + 1000*60*15)}).json({
+                    return res.status(200).cookie('cpid', userData._id.toString(), { expires: new Date(Date.now() + 1000*60*15)}).cookie('cpcode', code, { expires: new Date(Date.now() + 1000*60*15)}).json({
                         message : "You can change your password :)",
                     });
                 }
             }
         }else {
             return next(createError(400, 'Invalid Email or Mobile !'));
+        }
+
+    } catch (error) {
+        next(error);
+    }
+
+} 
+
+
+/**
+ * @access public
+ * @route api/v1/user/user-password-reset
+ * @method POST
+ */
+ export const userPasswordReset = async (req, res, next) => {
+    
+    try {
+
+        const { id, code, password } = req.body;
+
+        const userData = await User.findOne().and([{ _id: id }, { access_token: code }]);
+
+        if(!userData){
+            return next(createError(400, 'Password changed request failed!'));
+        }
+
+        if(userData){
+            await User.findByIdAndUpdate(id, {
+                password: hashPassword(password),
+                access_token: ""
+            });
+            return res.status(200).clearCookie('cpcode').clearCookie('cpid').clearCookie('findUser').clearCookie('otp').json({
+                message: "Password changed successfully :)"
+            });
         }
 
     } catch (error) {

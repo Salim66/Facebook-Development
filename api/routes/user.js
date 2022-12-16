@@ -1,5 +1,5 @@
 import express from 'express';
-import { loggedInUser, login, register, activateAccount, activateAccountByCode, forgotPassword, resetPasswordAction, activateCodeResend, findUserAccount, sendPasswordResetLink, checkPasswordResetLink } from '../controllers/userController.js';
+import { loggedInUser, login, register, activateAccount, activateAccountByCode, forgotPassword, resetPasswordAction, activateCodeResend, findUserAccount, sendPasswordResetLink, checkPasswordResetLink, userPasswordReset } from '../controllers/userController.js';
 
 
 
@@ -19,6 +19,7 @@ router.post('/forgot-password/:token', resetPasswordAction);
 router.post('/find-user-account', findUserAccount);
 router.post('/send-password-reset-link', sendPasswordResetLink);
 router.post('/check-password-reset-link', checkPasswordResetLink);
+router.post('/user-password-reset', userPasswordReset);
 
 
 // Export default router
