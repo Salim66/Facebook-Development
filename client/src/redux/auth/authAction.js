@@ -109,3 +109,19 @@ export const changePassword = (data, navigate) => async (dispatch) => {
         createToast(error.response.data.message);
     }
 }
+
+// create user login 
+export const userLogin = (data, navigate) => async (dispatch) => {
+    try {
+        await axios.post('/api/v1/user/login', { auth: data.auth, password: data.password })
+        .then(res => {
+            createToast(res.data.message, 'success');
+            navigate('/');
+        })
+        .catch(error => {
+            createToast(error.response.data.message, 'warn');
+        })
+    } catch (error) {
+        createToast(error.response.data.message);
+    }
+}

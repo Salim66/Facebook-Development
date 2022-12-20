@@ -207,35 +207,55 @@ export const login = async (req, res, next) => {
     try {
         
         // get form data
-        const { email, password } = req.body;
+        const { auth, password } = req.body;
 
-        if( !email || !password ){
+        if( !auth || !password ){
             next(createError(400, 'All fields are required !'));
         }
 
-        if( !isEmail(email) ){
-            next(createError(400, 'Email is Invalid !'));
-        }
+        if(isEmail(auth)){
+            const loginUser = await User.findOne({ email : auth });
 
-        const loginUser = await User.findOne({ email : email });
-
-        if( !loginUser ){
-            next(createError(400, "Email doesn't exists !"));
-        }else {
-
-            if( !passwordVerify( password, loginUser.password ) ){
-                next(createError(400, "Wrong Password !"));
+            if( !loginUser ){
+                next(createError(400, "Email doesn't exists !"));
             }else {
-                const token = createToken({ id: loginUser._id }, '365d');
-
-                res.status(201).cookie('authToken', token).json({
-                    message : "User login successful :)",
-                    user : loginUser,
-                    token : token
-                });
+    
+                if( !passwordVerify( password, loginUser.password ) ){
+                    next(createError(400, "Wrong Password !"));
+                }else {
+                    const token = createToken({ id: loginUser._id }, '365d');
+    
+                    res.status(201).cookie('authToken', token).json({
+                        message : "User login successful :)",
+                        user : loginUser,
+                        token : token
+                    });
+                }
+    
             }
+        }else if(isMobile(auth)){
+            const loginUser = await User.findOne({ mobile : auth });
 
-        }
+            if( !loginUser ){
+                next(createError(400, "Mobile number doesn't exists !"));
+            }else {
+    
+                if( !passwordVerify( password, loginUser.password ) ){
+                    next(createError(400, "Wrong Password !"));
+                }else {
+                    const token = createToken({ id: loginUser._id }, '365d');
+   
+                    res.status(201).cookie('authToken', token).json({
+                        message : "User login successful :)",
+                        user : loginUser,
+                        token : token
+                    });
+                }
+    
+            }
+        }else {
+            return next(createError(400, 'Invalid Email or Mobile !'));
+        }        
 
     } catch (error) {
         next(error);
@@ -600,6 +620,11 @@ export const findUserAccount = async (req, res, next) => {
         }
 
         if(mobileData){
+
+            await User.findByIdAndUpdate(mobileCheck._id, { 
+                access_token: activationCode
+            })
+
             // create a activation OTP
             sendSMS(mobileCheck.mobile, `Hi ${mobileCheck.first_name} ${mobileCheck.sur_name}, your account activation OTP is ${ activationCode }`)
             
