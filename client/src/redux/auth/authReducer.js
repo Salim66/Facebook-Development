@@ -1,4 +1,4 @@
-import { REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS } from "./authActionType";
+import { LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS } from "./authActionType";
 import authInitialState from "./authInitialState";
 
 
@@ -21,6 +21,23 @@ const AuthReducer = ( state = authInitialState, { type, payload } ) => {
                 ...state, 
                 loading: false,
                 message: payload
+            };
+
+        case LOGIN_REQUEST:
+            return {
+                ...state, 
+                loading: false
+            };
+        case LOGIN_SUCCESS:
+            return {
+                ...state, 
+                loading: true,
+                user: payload
+            };
+        case LOGIN_FAILED:
+            return {
+                ...state, 
+                loading: false
             };
     
         default:

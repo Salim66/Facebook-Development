@@ -10,10 +10,17 @@ import Activation from './pages/Activation/Activation';
 import Forgot from './pages/Forgot/Forgot';
 import FindAccount from './pages/FindAccount/FindAccount';
 import Password from './pages/Password/Password';
+import LoadingBar from 'react-top-loading-bar'
+import { useDispatch, useSelector } from 'react-redux';
+import { LOADER_END } from './redux/top-loader/loaderTypes.js';
 
 function App() {
+  const loader = useSelector((state) => state.loader);
+  const loaderDispatch = useDispatch();
+
   return (
     <>
+      <LoadingBar color='#1877F2' progress={loader} onLoaderFinished={() => loaderDispatch({ type: LOADER_END })} />
       <ToastContainer 
       style={{ zIndex: 99999 }}
       hideProgressBar={true}

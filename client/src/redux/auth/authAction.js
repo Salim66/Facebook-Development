@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createToast } from '../../utility/toast';
-import { REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS } from './authActionType';
+import { LOADER_START } from '../top-loader/loaderTypes';
+import { LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS } from './authActionType';
 
 // create register action
 export const userRegister = (data, setInput, e, setRegister, navigate) => async (dispatch) => {
@@ -50,7 +51,7 @@ export const userRegister = (data, setInput, e, setRegister, navigate) => async 
 // create activation account by OTP
 export const activationByOTP = (code, auth, navigate) => async (dispatch) => {
     try {
-        const action = await axios.post('/api/v1/user/code-activate', { code: code, auth: auth })
+        await axios.post('/api/v1/user/code-activate', { code: code, auth: auth })
         .then(res => {
             createToast('Account activation successful, please login', 'success');
             navigate('/login');
@@ -66,7 +67,7 @@ export const activationByOTP = (code, auth, navigate) => async (dispatch) => {
 // create resend activation link
 export const resendActivationLink = ( auth ) => async (dispatch) => {
     try {
-        const action = await axios.post('/api/v1/user/resend-code-activate', { auth: auth })
+        await axios.post('/api/v1/user/resend-code-activate', { auth: auth })
         .then(res => {
             createToast(res.data.message, 'success');
         })
@@ -81,7 +82,7 @@ export const resendActivationLink = ( auth ) => async (dispatch) => {
 // create check reset password otp
 export const checkPasswordResetOTP = (code, auth, navigate) => async (dispatch) => {
     try {
-        const action = await axios.post('/api/v1/user/check-password-reset-link', { code: code, auth: auth })
+        await axios.post('/api/v1/user/check-password-reset-link', { code: code, auth: auth })
         .then(res => {
             createToast(res.data.message, 'success');
             navigate('/change-password');
@@ -113,12 +114,25 @@ export const changePassword = (data, navigate) => async (dispatch) => {
 // create user login 
 export const userLogin = (data, navigate) => async (dispatch) => {
     try {
+        dispatch({
+            type: LOGIN_REQUEST
+        });
         await axios.post('/api/v1/user/login', { auth: data.auth, password: data.password })
         .then(res => {
+            dispatch({
+                type: LOGIN_SUCCESS,
+                payload: res.data.user
+            });
+            dispatch({
+                type: LOADER_START
+            });
             createToast(res.data.message, 'success');
             navigate('/');
         })
         .catch(error => {
+            dispatch({
+                type: LOGIN_FAILED
+            });
             createToast(error.response.data.message, 'warn');
         })
     } catch (error) {
