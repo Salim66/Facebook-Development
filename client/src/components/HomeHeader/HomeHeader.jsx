@@ -1,11 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import Favicon from '../../_assets/icons/favicon.ico';
 import User from '../../_assets/images/user.png';
+import Avatar from '../Avatar/Avatar';
 
 const HomeHeader = () => {
 
     const [userMenu, setUserMenu] = useState(false);
+    const { user } = useSelector((state) => state.auth);
 
   return (
     <div class="fb-home-header">
@@ -168,13 +171,13 @@ const HomeHeader = () => {
                 /></svg
             ></a>
             </div>
-            <div class="fb-user-item">
+            <div onClick={() => setUserMenu(!userMenu)} class="fb-user-item">
             { userMenu && <div class="user-menu-dropdown">
                 <div class="user-menu-box">
                 <div class="user-data-box">
                     <div class="user-data-box-item">
-                    <img src={ User } alt="" />
-                    <span>Asraful Haque</span>
+                    <Avatar />
+                    <span>{ `${ user.first_name } ${ user.sur_name }` }</span>
                     </div>
                     <div class="divider-0"></div>
                     <a href="#">See all profiles</a>
@@ -225,8 +228,8 @@ const HomeHeader = () => {
                 </ul>
                 </div>
             </div> }
-            
-            <img onClick={() => setUserMenu(!userMenu)} src={ User } alt="" />
+
+            <Avatar />
             </div>
         </div>
     </div>
