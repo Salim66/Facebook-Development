@@ -13,6 +13,7 @@ import Password from './pages/Password/Password';
 import LoadingBar from 'react-top-loading-bar'
 import { useDispatch, useSelector } from 'react-redux';
 import { LOADER_END } from './redux/top-loader/loaderTypes.js';
+import Authenticate from './privateRoute/Authenticate';
 
 function App() {
   const loader = useSelector((state) => state.loader);
@@ -29,7 +30,7 @@ function App() {
       newestOnTop={true}
       />
       <Routes>
-        <Route path="/" element={ <Home /> } />
+        <Route path="/" element={ <Authenticate><Home /></Authenticate> } />
         <Route path="/login" element={ <Auth /> } />
         <Route path="/profile" element={ <Profile /> } />
         <Route path="/activation/:type" element={ <Activation /> } />
