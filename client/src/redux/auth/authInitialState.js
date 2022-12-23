@@ -2,10 +2,10 @@
 
 // create inital state
 const authInitialState = {
-    user: {},
+    user: null,
     loginState: false,
     loading: false,
-    message: ''
+    message: null
 }
 
 // export default

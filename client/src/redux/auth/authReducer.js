@@ -1,4 +1,4 @@
-import { LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS } from "./authActionType";
+import { LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS, TOKEN_USER_FAILED, TOKEN_USER_REQUEST, TOKEN_USER_SUCCESS, USER_LOGOUT } from "./authActionType";
 import authInitialState from "./authInitialState";
 
 
@@ -26,14 +26,14 @@ const AuthReducer = ( state = authInitialState, { type, payload } ) => {
         case LOGIN_REQUEST:
             return {
                 ...state, 
-                loading: false,
-                loginState: true,
-                user: {}
+                loading: true,
+                loginState: false,
+                user: null
             };
         case LOGIN_SUCCESS:
             return {
                 ...state, 
-                loading: true,
+                loading: false,
                 loginState: true,
                 user: payload
             };
@@ -41,8 +41,37 @@ const AuthReducer = ( state = authInitialState, { type, payload } ) => {
             return {
                 ...state, 
                 loading: false,
+                loginState: false,
+                user: null
+            };
+
+        case TOKEN_USER_REQUEST:
+            return {
+                ...state, 
+                loading: true,
+                loginState: false,
+                user: null
+            };
+        case TOKEN_USER_SUCCESS:
+            return {
+                ...state, 
+                loading: false,
                 loginState: true,
-                user: {}
+                user: payload
+            };
+        case TOKEN_USER_FAILED:
+            return {
+                ...state, 
+                loading: false,
+                loginState: false,
+                user: null
+            };
+        case USER_LOGOUT:
+            return {
+                ...state, 
+                loading: true,
+                loginState: false,
+                user: null
             };
     
         default:

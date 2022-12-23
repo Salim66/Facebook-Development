@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { userLogout } from '../../redux/auth/authAction';
 import Favicon from '../../_assets/icons/favicon.ico';
 import User from '../../_assets/images/user.png';
 import Avatar from '../Avatar/Avatar';
@@ -9,6 +10,13 @@ const HomeHeader = () => {
 
     const [userMenu, setUserMenu] = useState(false);
     const { user } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
+    // handle user logout
+    const handleUserLogout = (e) => {
+        e.preventDefault();
+        dispatch(userLogout())
+    }
 
   return (
     <div class="fb-home-header">
@@ -218,7 +226,7 @@ const HomeHeader = () => {
                     </a>
                     </li>
                     <li>
-                    <a href="#">
+                    <a onClick={ handleUserLogout } href="#">
                         <div class="user-menu-icon"></div>
                         <div class="user-menu-item">
                         <span>Logout</span>

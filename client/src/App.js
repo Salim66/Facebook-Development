@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Auth from './pages/Auth/Auth';
 import Profile from './pages/Profile/Profile';
@@ -14,10 +14,23 @@ import LoadingBar from 'react-top-loading-bar'
 import { useDispatch, useSelector } from 'react-redux';
 import { LOADER_END } from './redux/top-loader/loaderTypes.js';
 import Authenticate from './privateRoute/Authenticate';
+import { useEffect } from 'react';
+import { tokenUser } from './redux/auth/authAction';
+import Cookies from 'js-cookie';
+import RedirectIfAuthenticated from './privateRoute/RedirectIfAuthenticated';
 
 function App() {
   const loader = useSelector((state) => state.loader);
   const loaderDispatch = useDispatch();
+  const tokenDispatch = useDispatch();
+  const token = Cookies.get('authToken');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(token){
+      tokenDispatch(tokenUser(token, navigate));
+    }
+  }, [token])
 
   return (
     <>
@@ -30,8 +43,8 @@ function App() {
       newestOnTop={true}
       />
       <Routes>
-        <Route path="/" element={ <Authenticate><Home /></Authenticate> } />
-        <Route path="/login" element={ <Auth /> } />
+        <Route path="/" element={ <RedirectIfAuthenticated><Home /></RedirectIfAuthenticated> } />
+        <Route path="/login" element={ <Authenticate><Auth /></Authenticate> } />
         <Route path="/profile" element={ <Profile /> } />
         <Route path="/activation/:type" element={ <Activation /> } />
         <Route path="/forgot" element={ <Forgot /> } />

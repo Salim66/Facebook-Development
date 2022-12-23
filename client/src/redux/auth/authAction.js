@@ -1,7 +1,8 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { createToast } from '../../utility/toast';
 import { LOADER_START } from '../top-loader/loaderTypes';
-import { LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS } from './authActionType';
+import { LOGIN_FAILED, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILED, REGISTER_REQUEST, REGISTER_SUCCESS, TOKEN_USER_REQUEST, TOKEN_USER_SUCCESS, USER_LOGOUT } from './authActionType';
 
 // create register action
 export const userRegister = (data, setInput, e, setRegister, navigate) => async (dispatch) => {
@@ -133,9 +134,61 @@ export const userLogin = (data, navigate) => async (dispatch) => {
             dispatch({
                 type: LOGIN_FAILED
             });
-            createToast(error.response.data.message, 'warn');
+            createToast(error.response.data.message);
         })
     } catch (error) {
         createToast(error.response.data.message);
     }
+}
+
+// get token user 
+export const tokenUser = (token, navigate) => async (dispatch) => {
+    try {
+        dispatch({
+            type: TOKEN_USER_REQUEST
+        });
+        await axios.get('/api/v1/user/me', { 
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+         })
+        .then(res => {
+            dispatch({
+                type: TOKEN_USER_SUCCESS,
+                payload: res.data.user
+            });
+            dispatch({
+                type: LOADER_START
+            });
+            // createToast(res.data.message, 'success');
+            // navigate('/');
+        })
+        .catch(error => {
+            dispatch({
+                type: USER_LOGOUT
+            });
+            dispatch({
+                type: LOGIN_FAILED
+            });
+            createToast(error.response.data.message);
+            // navigate('/login');
+        })
+    } catch (error) {
+        dispatch({
+            type: USER_LOGOUT
+        });
+        createToast(error.response.data.message);
+        // navigate('/login');
+    }
+}
+
+// user logout
+export const userLogout = () => (dispatch) => {
+    dispatch({
+        type: LOADER_START
+    });
+    Cookies.remove('authToken');
+    dispatch({
+        type: USER_LOGOUT
+    });
 }
